@@ -21,8 +21,18 @@ int main(){
     cout << "Welcome to Login App!\n";
 
     vector <userProfile> user;
+    loadUserData(user);
 
     while(true){
-        takeAction(displayMenu());
+        takeAction(displayMenu(), user);
+        
+        // displaying the registered accounts in the system
+        // for(int i = 0; i < user.size(); i++){
+        //     cout << "==============================\n";
+        //     cout << user[i].Id << endl;
+        //     cout << user[i].pass << endl; 
+        //     cout << user[i].email << endl; 
+
+        // }
     }
 }

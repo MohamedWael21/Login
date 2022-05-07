@@ -1,5 +1,4 @@
-#include <string>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
 #ifndef HEAD
 #define HEAD
@@ -7,15 +6,16 @@ using namespace std;
 // Structures delacration
 struct userProfile
 {
-    string UserName;
-    string Pass;
+    string Id;
+    string pass;
     string email;
 };
 
 // all declaration and interface
 int displayMenu();
-void takeAction(int);
-void Register();
+void loadUserData(vector<userProfile>&);
+void takeAction(int, vector<userProfile>&);
+void Register(vector <userProfile>&);
 void Login();
 void changePass();
 

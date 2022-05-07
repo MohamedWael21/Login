@@ -29,17 +29,31 @@ int displayMenu(){
     return choice;
 }
 
-void takeAction(int choice){
+void loadUserData(vector<userProfile>& user){
+    
+    fstream userFile("usersdata.txt");
+    while(!userFile.eof()){
+        userProfile nextUser;
+
+        userFile >> nextUser.Id;
+        userFile >> nextUser.pass;
+        userFile >> nextUser.email;
+
+        user.push_back(nextUser);
+    }
+}
+
+void takeAction(int choice, vector <userProfile>& user){
 
     switch (choice){
     case 1:
-    // Register();
+    Register(user);
         break;
     case 2:
-    // Login();
+    // Login(user);
         break;
     case 3:
-    // changePass();
+    // changePass(user);
         break;
     case 4:
         exit(0);
@@ -48,6 +62,23 @@ void takeAction(int choice){
         break;
     }
 
+}
 
+void Register(vector <userProfile>& user){
+
+    userProfile new_User;
+
+    cout << "Enter Username or Id: ";
+    cin >> new_User.Id;
+
+    cout << "Enter Email address: ";
+    cin >> new_User.email;
+
+    cout << "Enter password: ";
+    cin >> new_User.pass;
+
+    // check if the new_user's data is valid or not
+    // we will later do function named validation to check this
+    user.push_back(new_User);
 
 }
