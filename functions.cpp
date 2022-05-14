@@ -1,4 +1,4 @@
-    // All defination and implmentaion Here
+// All defination and implmentaion Here
 
 // include all libraries
 #include <bits/stdc++.h>
@@ -6,6 +6,11 @@
 
 using namespace std;
 
+// key to encyrpt and decyrpt password
+static const int KEY = 3;
+
+//login user for change password
+static  userProfile*  currentLoginUeser;
 
 int displayMenu(){
     int choice = 0;
@@ -36,8 +41,8 @@ void loadUserData(vector<userProfile>& user){
         userProfile nextUser;
 
         userFile >> nextUser.name;
-        userFile >> nextUser.pass;
         userFile >> nextUser.email;
+        userFile >> nextUser.pass;
         userFile >> nextUser.phone;
 
         user.push_back(nextUser);
@@ -49,13 +54,13 @@ void takeAction(int choice, vector <userProfile>& user){
     switch (choice){
 
     case 1:
-    Register(user);
+        Register(user);
         break;
     case 2:
-    // Login(user);
+        login(user);
         break;
     case 3:
-    // changePass(user);
+        changePassword(user);
         break;
     case 4:
         exit(0);
@@ -114,56 +119,264 @@ bool validPhoneFormat(userProfile new_User){
 
 void Register(vector <userProfile>& user){
 
+    bool isValid = false;
+
     userProfile new_User;
-    cout << "Enter Username or Id: ";
-    cin.ignore();
-    getline(cin, new_User.name);
 
-    cout << "Enter Email address: ";
-    cin >> new_User.email;
-
-    cout << "Enter password: ";
-    cin >> new_User.pass;
+    // loop until isValid tru;
+    while(!isValid){
+        
+        string pass2{};
+        cout << "Enter Username or Id: ";
+        cin >> new_User.name;
 
 
-    cout << "Enter Phone number: ";
-    cin >> new_User.phone;
+        // check the name format
+        if(!validNameFormat(new_User)){
+            cout << "Yout Name format is not valid\n";
+            continue;
+        }
+
+        cout << "Enter Email address: ";
+        cin >> new_User.email;
+
+        // check the email format
+        if(!validEmailFormat(new_User)){
+            cout << "Your Email format is not valid" << endl;
+            continue;
+        }
+
+        displayRules();
+
+        //getPassword();
+        cout << "Enter password: ";
+        cin >> new_User.pass;
+
+        //getPassword();
+        cout << "Enter password again: ";
+        cin >> pass2;
+
+        if(!validPassFormat(new_User.pass, pass2)) {
+            continue;
+        }
 
 
-    // check the name format
-    if(!validNameFormat(new_User)){
+        cout << "Enter Phone number: ";
+        cin >> new_User.phone;
 
-        cout << "Your username format is not valid" << endl;
-        Register(user);
+        // check phone number format
+         if(!validPhoneFormat(new_User)){
+            cout << "Your Phone number format is not valid" << endl;
+             continue;
+        }
 
+        // check if the new_user's data is registered already or not
+        if(!isRegistered(user, new_User)){
+            cout << "Your data is already used please enter another" << endl;
+            continue;
+        }
+
+        // all is valid
+        isValid = true;
+
+    }
+    // encyrpt password before store it
+    encyrpt(new_User.pass);
+    user.push_back(new_User);
+    save(user);
+
+
+
+}
+
+void displayRules(){
+
+    cout<<"password requirements: minimum 8 characters" << endl;
+    cout << "it is better to be more 8 characters long" << endl;
+    cout<<"password must at least include: lowercase letters , uppercase letters , digits , special characters" <<endl;
+}
+
+bool validPassFormat(string & pass, string &pass2){
+    //check if user enter same password
+    if(pass != pass2){
+        cout << "not match with fist password\n";
+        return false;
     }
 
 
-    // check the email format
-    else if(!validEmailFormat(new_User)){
-        cout << "Your Email format is not valid" << endl;
-        Register(user);
+    // make regex to check strong password
+    regex reg("^(?=[^a-z]*[a-z])(?=[^A-Z]*[A-Z])(?=\\D*\\d)(?=.*[\\W]).*{8,}$");
+    regex reg2("[a-z]*");
+
+    //check if password match rules
+    if(!regex_match(pass, reg)) {
+        cout << "password is Week\n";
+        displayRules();
+        return false;
     }
 
-    // put here the function that check password format
+    return true;
+}
+
+// write vector in file userdata.txt
+void save(vector<userProfile>&users){
+    // open file for write
+    ofstream  file;
+
+    file.open("usersdata.txt");
+
+    if(!file.is_open()){
+        cout << "not open\n";
+        return;
+    }
+
+    // write all users data
+    for(int i=0; i<users.size(); i++){
+        file << users[i].name << " " << users[i].email << " " <<  users[i].pass << " " << users[i].phone;
+    }
+  
+    // close file
+    file.close();
+
+    cout << "Rigestration complete\n";
+}
+
+string getPassword(){
+//    char password [100];
+
+//    while( c != EOF){
+//        static int i = 0;
+//        c = getch();
+//        i++;
+//        password[i] += c;
+//        cout << "*";
+//    }
+//
+//    for(int i=0; i<8; i++){
+//        password[i] = getch();
+//        cout << "*"<< endl;
+//    }
+//    cout << '\n';
+
+//    int a = 0;
+//    while (password[a-1] != '\r'){
+//        password[a] = getch();
+//        if(password[a-1] == '\r'){
+//            cout << '*';
+//        }
+//        a++;
+//    }
+//    cout << endl << endl;
+
+
+}
+
+// encyrpt passwords using ceaser algorithm
+void encyrpt(string &password){
+    // loop on all characters
+    for(int i=0; i<password.size(); i++){
+        // get shift charcter by key
+        char encyrptedChar = (char) (password[i] + KEY) % 128;
+        
+        // put character in password
+        password[i] = encyrptedChar;
+    }
+}
+
+
+// decyrpt passwords
+string decyrpt(string password){
+    // loop on all characters
+    for(int i=0; i<password.size(); i++){
+        // get original character
+        int code = (password[i] - KEY);
+        code += 128; // to avoid negative value
+        code %= 128;
+        
+        // put character in password
+        password[i] = (char) code;
+    }
+    return password;
+}
+
+bool login(vector<userProfile> &users){
+    // tries for login
+    int tries = 3;
+    while(tries--){
+        //get id from user
+        string id; 
+        cout << "Please Enter your Id: ";
+        cin >> id;
+
+        string pass;
+        // getpassword function here
+        cout << "Please Enter your password: ";
+        cin >> pass;
+
+        // check if user exist in system
+
+        // search for user in vector with smae id
+        for(int i=0; i<users.size(); i++){
+            // found user
+            if( users[i].name == id){
+                
+                // password is correct
+                if(decyrpt(users[i].pass) == pass){
+                    cout << "Successful Login, Welcome " + users[i].name + "\n";
+                    currentLoginUeser = &users[i];
+                    return true;
+                }
+
+            }
+        }
+        
+         cout << "Failed login. Try again\n";
+    }
+
+     cout << "Access denied to system\n";
+     return false;
+   
     
+}
 
-    // check phone number format
-    else if(!validPhoneFormat(new_User)){
-        cout << "Your Phone number format is not valid" << endl;
-        Register(user);
+void changePassword(vector<userProfile>&users){
+
+    // check if user has no access
+    if(!login(users)){
+        return;
     }
 
+    
+    // getpassword here
+    string password;
+    cout << "Enter old password: ";
+    cin >> password;
 
-    // check if the new_user's data is registered already or not
-    else if(!isRegistered(user, new_User)){
-        cout << "Your data is already used please enter another" << endl;
-        Register(user);
+    // enter new password
+    string newPassword;
+    cout << "Enter new password: ";
+    cin >> newPassword;
+
+    // enter new password again
+    string password2;
+    cout << "Enter password again: ";
+    cin >> password2;
+
+
+    if(!validPassFormat(newPassword, password2)){
+        displayRules();
+        return;
     }
 
+    // envyrpt password
+    encyrpt(newPassword);
 
-    else{
-        user.push_back(new_User);
-    }
+    // add password to profile
+    currentLoginUeser->pass = newPassword;
+    
+    save(users);
 
+    cout << "Password changed successfully\n";
+
+    
 }

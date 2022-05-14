@@ -13,23 +13,29 @@
 #include <bits/stdc++.h>
 #include "header.h"
 
+
 using namespace std;
+
 
 // main point of program
 int main(){
 
-    cout << "=====================================================\n";
-    cout << "              Welcome to Login App!\n";
-    cout << "=====================================================\n";
+//     cout << "=====================================================\n";
+//     cout << "              Welcome to Login App!\n";
+//     cout << "=====================================================\n";
 
-    vector <userProfile> user;
+// users data
+vector <userProfile> user;
 
-    loadUserData(user);
+// load conent of file from users
+loadUserData(user);
 
-
+    // loop until user exit
     while(true){
-        
+        // take action from user
         takeAction(displayMenu(), user);
       
     }
+
+
 }

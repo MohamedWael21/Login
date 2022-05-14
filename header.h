@@ -1,3 +1,4 @@
+
 #include <bits/stdc++.h>
 using namespace std;
 #ifndef HEAD
@@ -10,7 +11,6 @@ struct userProfile
     string pass;
     string email;
     string phone;
-    vector <string> oldpasswords;
 };
 
 // all declaration and interface
@@ -22,7 +22,15 @@ bool isRegistered(vector <userProfile>, userProfile);
 bool validEmailFormat(userProfile);
 bool validPhoneFormat(userProfile);
 bool validNameFormat(userProfile);
+void displayRules();
+bool validPassFormat(string&, string&);
+string getPassword();
+void save(vector<userProfile>&);
 void Login();
-void changePass();
+void encyrpt(string&);
+string decyrpt(string );
+bool login(vector<userProfile> &);
+void changePassword(vector<userProfile>&);
+
 
 #endif
