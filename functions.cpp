@@ -2,6 +2,7 @@
 
 // include all libraries
 #include <bits/stdc++.h>
+#include <conio.h>
 #include "header.h"
 
 using namespace std;
@@ -123,7 +124,7 @@ void Register(vector <userProfile>& user){
 
     userProfile new_User;
 
-    // loop until isValid tru;
+    // loop until isValid true;
     while(!isValid){
         
         string pass2{};
@@ -133,7 +134,7 @@ void Register(vector <userProfile>& user){
 
         // check the name format
         if(!validNameFormat(new_User)){
-            cout << "Yout Name format is not valid\n";
+            cout << "Your Name format is not valid\n";
             continue;
         }
 
@@ -148,13 +149,12 @@ void Register(vector <userProfile>& user){
 
         displayRules();
 
-        //getPassword();
+        // getPassword();
         cout << "Enter password: ";
-        cin >> new_User.pass;
+        new_User.pass = getPassword();
 
-        //getPassword();
         cout << "Enter password again: ";
-        cin >> pass2;
+        pass2 = getPassword();
 
         if(!validPassFormat(new_User.pass, pass2)) {
             continue;
@@ -242,33 +242,21 @@ void save(vector<userProfile>&users){
 }
 
 string getPassword(){
-//    char password [100];
+   string password;
+    int ch = _getch();
+    while(ch != 13){
+        if(ch == 8){
+            password.pop_back();
+            continue;
+        }
+        password.push_back(ch);
+        cout << '*';
+        ch = _getch();
 
-//    while( c != EOF){
-//        static int i = 0;
-//        c = getch();
-//        i++;
-//        password[i] += c;
-//        cout << "*";
-//    }
-//
-//    for(int i=0; i<8; i++){
-//        password[i] = getch();
-//        cout << "*"<< endl;
-//    }
-//    cout << '\n';
+    }
+    cout << endl;
 
-//    int a = 0;
-//    while (password[a-1] != '\r'){
-//        password[a] = getch();
-//        if(password[a-1] == '\r'){
-//            cout << '*';
-//        }
-//        a++;
-//    }
-//    cout << endl << endl;
-
-
+    return password;
 }
 
 // encyrpt passwords using ceaser algorithm
@@ -311,7 +299,8 @@ bool login(vector<userProfile> &users){
         string pass;
         // getpassword function here
         cout << "Please Enter your password: ";
-        cin >> pass;
+        // cin >> pass;
+        pass = getPassword();
 
         // check if user exist in system
 
@@ -350,17 +339,20 @@ void changePassword(vector<userProfile>&users){
     // getpassword here
     string password;
     cout << "Enter old password: ";
-    cin >> password;
+    // cin >> password;
+    password = getPassword();
 
     // enter new password
     string newPassword;
     cout << "Enter new password: ";
-    cin >> newPassword;
+    // cin >> newPassword;
+    newPassword = getPassword();
 
     // enter new password again
     string password2;
     cout << "Enter password again: ";
-    cin >> password2;
+    // cin >> password2;
+    password2 = getPassword();
 
 
     if(!validPassFormat(newPassword, password2)){

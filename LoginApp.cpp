@@ -34,6 +34,13 @@ loadUserData(user);
     while(true){
         // take action from user
         takeAction(displayMenu(), user);
+        for(int i = 0; i < user.size(); i++){
+            cout << user[i].name << endl;
+            cout << user[i].pass << endl;
+            cout << user[i].email << endl;
+            cout << user[i].phone << endl;
+
+        }
       
     }
 
