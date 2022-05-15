@@ -247,6 +247,9 @@ string getPassword(){
     while(ch != 13){
         if(ch == 8){
             password.pop_back();
+            ch = _getch();
+            cout << '\b';
+            cout << "";
             continue;
         }
         password.push_back(ch);
